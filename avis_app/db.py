@@ -47,9 +47,9 @@ class AvisDAO:
 
     def get_events_by_date_range(self, start_date, end_date):
         cursor = self.conn.cursor()
-        cursor.execute('SELECT * from event_info WHERE DATE(date_time) BETWEEN STR_TO_DATE(%s, "%Y-%m-%d") AND STR_TO_DATE(%s, "%Y-%m-%d")',
+        cursor.execute('SELECT * from event_info WHERE DATE(date_time) BETWEEN STR_TO_DATE(%s, "%Y-%m-%d") AND STR_TO_DATE(%s, "%Y-%m-%d") OR date_time="1000-01-01 00:00:00"',
          (start_date, end_date))
-        self.conn.commit()
+        #self.conn.commit()
         col_names = cursor.column_names
         result_set = cursor.fetchall()
 

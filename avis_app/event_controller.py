@@ -294,3 +294,13 @@ def get_events_upcoming():
         event_info = dict(zip(col_names, item))
         event_info_list.append(event_info)
     return jsonify(event_info_list)
+
+
+@app.route('/events/all')
+def get_events_all():
+    col_names, events = dao.get_all_events()
+    event_info_list = []
+    for item in events:
+        event_info = dict(zip(col_names, item))
+        event_info_list.append(event_info)
+    return jsonify(event_info_list)
