@@ -299,8 +299,20 @@ def get_events_upcoming():
 @app.route('/events/all')
 def get_events_all():
     col_names, events = dao.get_all_events()
-    event_info_list = []
+    upcoming_events_list = []
+    past_events_list = []
+    now = datetime.now()
+    datetime_tbd = datetime.strptime('1000-01-01T00:00:00', '%Y-%m-%dT%H:%M:%S')
     for item in events:
         event_info = dict(zip(col_names, item))
-        event_info_list.append(event_info)
+        event_datetime = event_info['date_time']
+        if event_datetime > now or event_datetime == datetime_tbd:
+            upcoming_events_list.append(event_info)
+        else:
+            past_events_list.append(event_info)
+    event_info_list = {}
+    if upcoming_events_list:
+        event_info_list['upcoming'] = upcoming_events_list
+    if past_events_list:
+        event_info_list['past'] = past_events_list
     return jsonify(event_info_list)
