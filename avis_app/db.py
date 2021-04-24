@@ -238,6 +238,7 @@ class AvisDAO:
         cursor.execute('SELECT * FROM event_info')
         col_names = cursor.column_names
         result_set = cursor.fetchall()
+        self.conn.commit()
 
         event_info = []
         for item in result_set:
