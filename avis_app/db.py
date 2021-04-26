@@ -15,14 +15,13 @@ class AvisDAO:
             "database": database,
         }
         self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, **dbconfig)
-        #self.conn = mysql.connector.connect(**dbconfig)
-        # def pin_db():
-        #     try:
-        #         cursor = self.conn.cursor()
-        #         cursor.execute('SELECT 1 FROM event_info')
-        #     except mysql.connector.Error as e:
-        #         self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, **dbconfig)
-        # threading.Timer(21600, pin_db).start()
+        def pin_db():
+            try:
+                cursor = self.conn.cursor()
+                cursor.execute('SELECT 1 FROM event_info')
+            except mysql.connector.Error as e:
+                self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, **dbconfig)
+        threading.Timer(21600, pin_db).start()
 
 
 
