@@ -14,7 +14,7 @@ class AvisDAO:
             "host": host,
             "database": database,
         }
-        self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, **dbconfig)
+        self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, buffered=True, **dbconfig)
         def pin_db():
             try:
                 cursor = self.conn.cursor()
@@ -237,7 +237,7 @@ class AvisDAO:
         cursor.execute('SELECT * FROM event_info')
         col_names = cursor.column_names
         result_set = cursor.fetchall()
-        self.conn.commit()
+        #self.conn.commit()
 
         event_info = []
         for item in result_set:
