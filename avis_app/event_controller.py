@@ -11,8 +11,7 @@ from flask_login import login_required
 from avis_app import app, dao, redis_client
 from avis_app.event_service import *
 from avis_app.mail_service import *
-from avis_app.redis_cli import *
-from avis_app.redis_client import get_all_events
+from avis_app.redis_client import *
 from avis_app.request_decorators import current_user_only, roles_required
 
 
