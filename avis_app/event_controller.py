@@ -1,17 +1,19 @@
+import json
+import random
+import string
+from datetime import date, datetime, timedelta
+
 import flask_login
 import mysql.connector
-import random, string
-
-from flask import jsonify, Response, render_template
-from flask import request
+from flask import Response, jsonify, render_template, request
 from flask_login import login_required
-from datetime import datetime, date, timedelta
 
-from avis_app import app, dao
+from avis_app import app, dao, redis_client
 from avis_app.event_service import *
 from avis_app.mail_service import *
-
-from avis_app.request_decorators import roles_required, current_user_only
+from avis_app.redis_cli import *
+from avis_app.redis_client import get_all_events
+from avis_app.request_decorators import current_user_only, roles_required
 
 
 @app.route('/')
@@ -298,21 +300,27 @@ def get_events_upcoming():
 
 @app.route('/events/all')
 def get_events_all():
-    col_names, events = dao.get_all_events()
-    upcoming_events_list = []
-    past_events_list = []
-    now = datetime.now()
-    datetime_tbd = datetime.strptime('1000-01-01T00:00:00', '%Y-%m-%dT%H:%M:%S')
-    for item in events:
-        event_info = dict(zip(col_names, item))
-        event_datetime = event_info['date_time']
-        if event_datetime > now or event_datetime == datetime_tbd:
-            upcoming_events_list.append(event_info)
-        else:
-            past_events_list.append(event_info)
-    event_info_list = {}
-    if upcoming_events_list:
-        event_info_list['upcoming'] = upcoming_events_list
-    if past_events_list:
-        event_info_list['past'] = past_events_list
-    return jsonify(event_info_list)
+    events = redis_client.get_all_events()
+    if events is not None:
+        event_dict = json.loads(events)
+        return jsonify(event_dict)
+    else:
+        col_names, events = dao.get_all_events()
+        upcoming_events_list = []
+        past_events_list = []
+        now = datetime.now()
+        datetime_tbd = datetime.strptime('1000-01-01T00:00:00', '%Y-%m-%dT%H:%M:%S')
+        for item in events:
+            event_info = dict(zip(col_names, item))
+            event_datetime = event_info['date_time']
+            if event_datetime > now or event_datetime == datetime_tbd:
+                upcoming_events_list.append(event_info)
+            else:
+                past_events_list.append(event_info)
+        event_info_list = {}
+        if upcoming_events_list:
+            event_info_list['upcoming'] = upcoming_events_list
+        if past_events_list:
+            event_info_list['past'] = past_events_list
+        redis_client.put_all_events(json.dumps(event_info_list))    
+        return jsonify(event_info_list)
