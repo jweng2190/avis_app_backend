@@ -1,6 +1,7 @@
 from flask import Flask
 import logging
 import os
+import redis
 
 from avis_app.json_encoder import CustomJSONEncoder
 

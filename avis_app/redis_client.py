@@ -1,4 +1,3 @@
-import redis
 from avis_app import redis_cli
 
 def get_all_events():
