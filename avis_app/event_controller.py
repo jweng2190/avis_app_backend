@@ -13,6 +13,7 @@ from avis_app.event_service import *
 from avis_app.mail_service import *
 from avis_app.redis_client import *
 from avis_app.request_decorators import current_user_only, roles_required
+from avis_app.json_encoder import CustomJSONEncoder
 
 
 @app.route('/')
@@ -321,5 +322,6 @@ def get_events_all():
             event_info_list['upcoming'] = upcoming_events_list
         if past_events_list:
             event_info_list['past'] = past_events_list
-        redis_client.put_all_events(json.dumps(event_info_list))    
+        jsonEncoder = CustomJSONEncoder()
+        redis_client.put_all_events(jsonEncoder.encode(event_info_list))    
         return jsonify(event_info_list)
