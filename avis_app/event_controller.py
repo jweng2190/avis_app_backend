@@ -302,6 +302,7 @@ def get_events_upcoming():
 def get_events_all():
     events = redis_client.get_all_events()
     if events is not None:
+        app.logger.info('Get result from Redis')
         event_dict = json.loads(events)
         return jsonify(event_dict)
     else:
