@@ -316,6 +316,5 @@ def get_events_all():
         event_info_list['upcoming'] = upcoming_events_list
     if past_events_list:
         event_info_list['past'] = past_events_list
-    jsonEncoder = CustomJSONEncoder()
-    redis_client.put_all_events(jsonEncoder.encode(event_info_list))    
+    jsonEncoder = CustomJSONEncoder()    
     return jsonify(event_info_list)
