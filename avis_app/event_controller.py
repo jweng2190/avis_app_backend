@@ -8,7 +8,7 @@ import mysql.connector
 from flask import Response, jsonify, render_template, request
 from flask_login import login_required
 
-from avis_app import app, dao, redis_client
+from avis_app import app, dao
 from avis_app.event_service import *
 from avis_app.mail_service import *
 from avis_app.request_decorators import current_user_only, roles_required
