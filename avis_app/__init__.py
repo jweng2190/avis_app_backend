@@ -22,7 +22,7 @@ from avis_app.db import AvisDAO
 
 db_username = os.environ['MYSQLDB_USERNAME']
 db_password = os.environ['MYSQLDB_PASSWORD']
-dao = AvisDAO(db_username, db_password, '72.167.43.203', 'avis_app')
+dao = AvisDAO(db_username, db_password, 'localhost', 'avis_app')
 #redis_cli = redis.Redis(host="ec2-13-58-197-138.us-east-2.compute.amazonaws.com", port=6379)
 
 from avis_app import event_controller, auth
