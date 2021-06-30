@@ -11,7 +11,6 @@ from flask_login import login_required
 from avis_app import app, dao, redis_client
 from avis_app.event_service import *
 from avis_app.mail_service import *
-from avis_app.redis_client import *
 from avis_app.request_decorators import current_user_only, roles_required
 from avis_app.json_encoder import CustomJSONEncoder
 
@@ -300,29 +299,23 @@ def get_events_upcoming():
 
 @app.route('/events/all')
 def get_events_all():
-    events = redis_client.get_all_events()
-    if events is not None:
-        app.logger.info('Get result from Redis')
-        event_dict = json.loads(events)
-        return jsonify(event_dict)
-    else:
-        col_names, events = dao.get_all_events()
-        upcoming_events_list = []
-        past_events_list = []
-        now = datetime.now()
-        datetime_tbd = datetime.strptime('1000-01-01T00:00:00', '%Y-%m-%dT%H:%M:%S')
-        for item in events:
-            event_info = dict(zip(col_names, item))
-            event_datetime = event_info['date_time']
-            if event_datetime > now or event_datetime == datetime_tbd:
-                upcoming_events_list.append(event_info)
-            else:
-                past_events_list.append(event_info)
-        event_info_list = {}
-        if upcoming_events_list:
-            event_info_list['upcoming'] = upcoming_events_list
-        if past_events_list:
-            event_info_list['past'] = past_events_list
-        jsonEncoder = CustomJSONEncoder()
-        redis_client.put_all_events(jsonEncoder.encode(event_info_list))    
-        return jsonify(event_info_list)
+    col_names, events = dao.get_all_events()
+    upcoming_events_list = []
+    past_events_list = []
+    now = datetime.now()
+    datetime_tbd = datetime.strptime('1000-01-01T00:00:00', '%Y-%m-%dT%H:%M:%S')
+    for item in events:
+        event_info = dict(zip(col_names, item))
+        event_datetime = event_info['date_time']
+        if event_datetime > now or event_datetime == datetime_tbd:
+            upcoming_events_list.append(event_info)
+        else:
+            past_events_list.append(event_info)
+    event_info_list = {}
+    if upcoming_events_list:
+        event_info_list['upcoming'] = upcoming_events_list
+    if past_events_list:
+        event_info_list['past'] = past_events_list
+    jsonEncoder = CustomJSONEncoder()
+    redis_client.put_all_events(jsonEncoder.encode(event_info_list))    
+    return jsonify(event_info_list)
