@@ -14,13 +14,13 @@ class AvisDAO:
             "host": host,
             "database": database,
         }
-        self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, buffered=True, **dbconfig)
+        self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, connection_timeout=86400, buffered=True, **dbconfig)
         def pin_db():
             try:
                 cursor = self.conn.cursor()
                 cursor.execute('SELECT 1 FROM event_info')
             except mysql.connector.Error as e:
-                self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, **dbconfig)
+                self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, connection_timeout=86400, buffered=True, **dbconfig)
         threading.Timer(21600, pin_db).start()
 
 
@@ -237,6 +237,7 @@ class AvisDAO:
         cursor.execute('SELECT * FROM event_info')
         col_names = cursor.column_names
         result_set = cursor.fetchall()
+        cursor.close()
         #self.conn.commit()
 
         event_info = []
