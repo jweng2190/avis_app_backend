@@ -14,7 +14,7 @@ class AvisDAO:
             "host": host,
             "database": database,
         }
-        self.conn = mysql.conneself.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, connection_timeout=86400, buffered=True, **dbconfig)
+        self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, connection_timeout=86400, buffered=True, **dbconfig)
         def pin_db():
             try:
                 cursor = self.conn.cursor()
