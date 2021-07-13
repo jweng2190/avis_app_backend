@@ -14,16 +14,16 @@ class AvisDAO:
             "host": host,
             "database": database,
         }
-        self.conn = mysql.connector.connect(buffered=True, **dbconfig)
-        # def pin_db():
-        #     try:
-        #         cursor = self.conn.cursor()
-        #         cursor.execute('SELECT 1 FROM event_info')
-        #     except mysql.connector.Error as e:
-        #         self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, connection_timeout=86400, buffered=True, **dbconfig)
-        # threading.Timer(21600, pin_db).start()
-
-
+        self.conn = mysql.conneself.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, connection_timeout=86400, buffered=True, **dbconfig)
+        def pin_db():
+            try:
+                cursor = self.conn.cursor()
+                cursor.execute('SELECT 1 FROM event_info')
+                cursor.close()
+                threading.Timer(21600, pin_db).start()
+            except mysql.connector.Error as e:
+                self.conn = mysql.connector.connect(pool_name='avis_pool', pool_size=5, connection_timeout=86400, buffered=True, **dbconfig)
+        pin_db()
 
     # def __enter__(self):
     #     return self
