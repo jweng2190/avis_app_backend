@@ -234,12 +234,11 @@ class AvisDAO:
 
     def get_all_events(self):
         cursor = self.conn.cursor()
-        cursor.execute('SET SESSION TRANSACTION ISOLATION LEVEL READ COMMITTED')
         cursor.execute('SELECT * FROM event_info')
         col_names = cursor.column_names
         result_set = cursor.fetchall()
         cursor.close()
-        #self.conn.commit()
+        self.conn.commit()
 
         event_info = []
         for item in result_set:
